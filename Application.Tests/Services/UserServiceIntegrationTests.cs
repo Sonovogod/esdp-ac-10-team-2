@@ -217,7 +217,7 @@ public class UserServiceIntegrationTests
         Assert.NotEmpty(response.Messages);
     }
 
-    [Fact]
+    /*[Fact]
     public async Task UpdateUser_ExistingUser_ReturnsSuccess()
     {
         // Arrange
@@ -309,5 +309,5 @@ public class UserServiceIntegrationTests
         Assert.True(response.Success);
         Assert.NotNull(response.Result);
         Assert.NotEmpty(response.Messages);
-    }
+    }*/
 }

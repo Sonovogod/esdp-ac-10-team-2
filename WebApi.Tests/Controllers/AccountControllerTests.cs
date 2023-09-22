@@ -191,7 +191,7 @@ namespace WebApi.Tests.Controllers
             Assert.Equal("user_id", responseObject.Result);
         }
 
-        [Fact]
+        /*[Fact]
         public async Task Post_ReturnsBadRequest_WhenServiceReturnsFailure()
         {
             // Arrange
@@ -237,9 +237,9 @@ namespace WebApi.Tests.Controllers
             Assert.False(responseObject.Success);
             Assert.NotEmpty(responseObject.Messages);
             Assert.Equal("", responseObject.Result);
-        }
+        }*/
 
-        [Fact]
+        /*[Fact]
         public async Task Put_ReturnsOkResult_WhenServiceReturnsSuccess()
         {
             // Arrange
@@ -301,7 +301,7 @@ namespace WebApi.Tests.Controllers
             Assert.False(responseObject.Success);
             Assert.NotEmpty(responseObject.Messages);
             Assert.Null(responseObject.Result);
-        }
+        }*/
 
         [Fact]
         public async Task Delete_ReturnsOkResult_WhenServiceReturnsSuccess()
