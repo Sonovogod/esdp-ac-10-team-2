@@ -38,4 +38,10 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="Template\template.xlsx">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

@@ -72,14 +72,14 @@ public class RadiationZoneExelFileService : IRadiationZoneExelFileService
 
     public async Task<BaseResponse<byte[]>> GetTemplate()
     {
-        string mainDir = Environment.CurrentDirectory;
-        string path = (mainDir + @"\Template\template.xlsx");
-        if (!File.Exists(path))
+        string mainDir = AppDomain.CurrentDomain.BaseDirectory;
+        string templatePath = Path.Combine(mainDir, "Template", "template.xlsx");
+        if (!File.Exists(templatePath))
             return new BaseResponse<byte[]>(
                 Result: null,
                 Messages: new List<string>() {"Шаблон не найден"},
                 Success: false);
-        var fileBytes = await File.ReadAllBytesAsync(path);
+        var fileBytes = await File.ReadAllBytesAsync(templatePath);
        
         return new BaseResponse<byte[]>(
             Result: fileBytes,
