@@ -22,7 +22,7 @@ try
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
-    string connection = "server=localhost;port=5432;database=Project5G;username=postgres;password=123;";
+    string connection = "server=localhost;port=5432;database=ProjectFiveG;username=postgres;password=postgres;";
 
     builder.Services.AddDbConfigure(connection!);
     builder.Services.AddInfrastructureServices();

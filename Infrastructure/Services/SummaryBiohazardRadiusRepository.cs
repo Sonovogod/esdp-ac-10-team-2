@@ -10,4 +10,9 @@ public class SummaryBiohazardRadiusRepository : BaseRepository<SummaryBiohazardR
     public SummaryBiohazardRadiusRepository(Project5GDbContext dbContext) : base(dbContext)
     {
     }
+
+    public void Delete(List<SummaryBiohazardRadius> summaryBiohazardRadii)
+    {
+        DbContext.SummaryBiohazardRadii.RemoveRange(summaryBiohazardRadii);
+    }
 }

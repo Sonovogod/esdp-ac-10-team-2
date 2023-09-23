@@ -16,6 +16,7 @@ public static class ConfigureService
     {
         services.AddScoped<IServiceWrapper, ServiceWrapper>();
         services.AddScoped<IEnergyFlowService, EnergyFlowService>();
+        services.AddScoped<ITotalFluxDensityService, TotalFluxDensityService>();
         services.AddScoped<IBiohazardRadiusService, BiohazardRadiusService>();
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IUserService, UserService>();
@@ -28,6 +29,7 @@ public static class ConfigureService
         services.AddScoped<AntennaValidator>();
         services.AddScoped<TranslatorSpecsValidator>();
         services.AddScoped<EnergyResultValidator>();
+        services.AddScoped<TotalFluxDensityResultValidator>();
         services.AddScoped<RoleValidator>();
         services.AddScoped<RadiationZoneValidator>();
         services.AddScoped<ExecutiveCompanyValidator>();

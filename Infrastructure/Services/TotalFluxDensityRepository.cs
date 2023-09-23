@@ -1,4 +1,5 @@
 using Application.Interfaces.RepositoryContract;
+using Application.Models.EnergyResult;
 using Domain.Entities;
 using Infrastructure.Persistence.DataContext;
 using Infrastructure.Repositories;
@@ -9,5 +10,10 @@ public class TotalFluxDensityRepository : BaseRepository<TotalFluxDensity>, ITot
 {
     public TotalFluxDensityRepository(Project5GDbContext dbContext) : base(dbContext)
     {
+    }
+
+    public void Delete(List<TotalFluxDensity> totalFlux)
+    {
+        DbContext.TotalFluxDensities.RemoveRange(totalFlux);
     }
 }

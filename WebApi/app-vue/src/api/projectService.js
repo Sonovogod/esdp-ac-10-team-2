@@ -58,6 +58,15 @@ const projectService = {
         } catch (error) {
             console.log(error)
         }
+    },
+
+    async getProjectFile(id) {
+        try {
+            const response = await axios.get(`/api/export-project/${id}`, {responseType: "blob"});
+            return response;
+        } catch (error) {
+            console.log(error)
+        }
     }
 };
 export default projectService;

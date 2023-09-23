@@ -9,6 +9,7 @@ namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ExecutiveCompaniesController : Controller
     {
         private readonly IServiceWrapper _service;
@@ -39,7 +40,6 @@ namespace WebApi.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> Post(CreateExecutiveCompanyDto model)
         {
             ExecutiveCompanyDto companyDto = _mapper.Map<ExecutiveCompanyDto>(model);
@@ -51,7 +51,6 @@ namespace WebApi.Controllers
         }
 
         [HttpPut]
-        [Authorize]
         public async Task<IActionResult> Put(UpdateExecutiveCompanyDto model)
         {
             var baseResponse = await _service.ExecutiveCompanyService.UpdateExecutiveCompany(model, User.Identity.Name);

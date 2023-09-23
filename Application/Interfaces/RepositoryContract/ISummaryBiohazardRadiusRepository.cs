@@ -5,5 +5,5 @@ namespace Application.Interfaces.RepositoryContract;
 
 public interface ISummaryBiohazardRadiusRepository : IBaseRepository<SummaryBiohazardRadius>
 {
-    
+    void Delete(List<SummaryBiohazardRadius> summaryBiohazardRadii);
 }

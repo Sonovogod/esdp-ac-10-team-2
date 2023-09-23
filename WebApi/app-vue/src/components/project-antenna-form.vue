@@ -14,8 +14,10 @@
               :allow-adding="true"
               :allow-deleting="true"
               :texts="{confirmDeleteMessage: 'Вы уверены, что хотите удалить эту запись?'}"
-              mode="form"
-          />
+              mode="popup"
+          >
+              <dx-popup :show-title="true" title="Добавление антенны" col-count="2" width="50%"></dx-popup>
+          </dx-editing>
             <dx-toolbar>
                 <dx-item name="addRowButton" show-text="always" location="after" :options="addButton">
                 </dx-item>
@@ -136,16 +138,16 @@ import antennaService from "@/api/antennaService";
 import projectAntennaService from "@/api/projectAntennaService";
 import {useRoute} from "vue-router";
 import {
-  DxDataGrid,
-  DxColumn,
-  DxFormItem,
-  DxPaging,
-  DxEditing,
-  DxPager, 
-  DxToolbar, 
-  DxItem, 
-  DxSorting,
-  DxLookup, DxMasterDetail
+    DxDataGrid,
+    DxColumn,
+    DxFormItem,
+    DxPaging,
+    DxEditing,
+    DxPager,
+    DxToolbar,
+    DxItem,
+    DxSorting,
+    DxLookup, DxMasterDetail, DxPopup
 } from 'devextreme-vue/data-grid';
 import 'devextreme-vue/text-area';
 import {DxRequiredRule} from "devextreme-vue/validator";
