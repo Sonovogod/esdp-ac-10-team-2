@@ -40,57 +40,16 @@ public class FileService : IFileService
         _totalFluxDensityService = totalFluxDensityService;
     }
 
-    public async Task<BaseResponse<bool>> ReadExcel(string filePath,TranslatorSpecs translatorSpecs,DirectionType type)
-    {
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        using (FileStream stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-        {
-            using (ExcelPackage package = new ExcelPackage(stream))
-            {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets[0];
-                List<RadiationZone> list = new List<RadiationZone>();
-                for (int row = 1; row <= worksheet.Dimension.Rows; row++)
-                {
-                    var degreeCellValue = worksheet.Cells[row, 1].Value;
-                    var valueCellValue = worksheet.Cells[row, 2].Value;
-                    if (int.TryParse(degreeCellValue?.ToString(), out int degree) && decimal.TryParse(valueCellValue?.ToString(), out decimal value))
-                    {
-                        RadiationZone radiationZone = new RadiationZone()
-                        {
-                            Degree = degree,
-                            Value = value,
-                            DirectionType = type.GetDescription(),
-                            TranslatorSpecsId = translatorSpecs.Id
-                        };
-                        await _repositoryWrapper.RadiationZoneRepository.CreateAsync(radiationZone);
-                        list.Add(radiationZone);
-                    }
-                }
-                if (list.Count != 361)
-                {
-                    return new BaseResponse<bool>(
-                        Result: false,
-                        Messages: new List<string> { "Файл не корректный" },
-                        Success: false);
-                }
-                await _repositoryWrapper.Save();
-            }
-        }
-        return new BaseResponse<bool>(
-            Result: true,
-            Messages: new List<string> { "Файл успешно считан" },
-            Success: true);
-    }
-    
-    
-
     public async Task<BaseResponse<byte[]>> ProjectWord(string oid)
     {
         try
         {
+            string mainDir = AppDomain.CurrentDomain.BaseDirectory;
+            string filePathTemp = Path.Combine(mainDir,"Template","ProjectTemp.docx");
             OfficeCharts.Instance.ActivateCrossPlatformCharts();
             var project = await  _repositoryWrapper.ProjectRepository.GetByCondition(x =>
                 x.Id.ToString() == oid);
+            string filePathExport = Path.Combine(mainDir,"TemporaryFiles",$"Project{project.Id}.docx");
             await _biohazardRadiusService.Create(project.Id.ToString());
             await _energyFlowService.CreateAsync(project.Id.ToString(), project.CreatedBy);
             var contrAgent = project.ContrAgent;
@@ -99,7 +58,7 @@ public class FileService : IFileService
             var executiveCompany = project.ExecutiveCompany;
             using (var wordProcessor = new RichEditDocumentServer()) 
             { 
-                wordProcessor.LoadDocument("Template/ProjectTemp.docx");
+                wordProcessor.LoadDocument(filePathTemp);
                 Document document = wordProcessor.Document;
                 document.ReplaceAll("[ContrAgent]", $"{contrAgent.CompanyName}", SearchOptions.WholeWord);
                 document.ReplaceAll("[ExecutiveCompanyName]", $"{executiveCompany.CompanyName}", SearchOptions.WholeWord);
@@ -108,7 +67,7 @@ public class FileService : IFileService
                 document.ReplaceAll("[ExecutiveCompanyAddress]", $"{executiveCompany.Address}", SearchOptions.WholeWord);
                 document.ReplaceAll("[ExecutorFIO]", $"{executor.Surname} {executor.Name} {executor.Patronymic}", SearchOptions.WholeWord);
                 document.ReplaceAll("[ExecutorEmail]", $"{executor.Login}", SearchOptions.WholeWord);
-                document.ReplaceAll("[ExecutorNumber]", $"{executor.PhoneNumber}", SearchOptions.WholeWord);
+                document.ReplaceAll("[ExecutorNumber]", $"+7{executor.PhoneNumber}", SearchOptions.WholeWord);
                 document.ReplaceAll("[License]", $"{executiveCompany.LicenseNumber} от {executiveCompany.LicenseDateOfIssue} г.", SearchOptions.WholeWord);
                 document.ReplaceAll("[ProjectNumber]", $"{project.ProjectNumber}", SearchOptions.WholeWord);
                 document.ReplaceAll("[ContrAgentPhone]", $"{contrAgent.PhoneNumber}", SearchOptions.WholeWord);
@@ -330,8 +289,8 @@ public class FileService : IFileService
                                                                     "Значение Rz указывает на отклонение БОЗ от оси излучения антенны," +
                                                                     " перпендикулярно к ней на расстоянии Rx от центра излучения вдоль оси");
                         //Вызов методов отрисовки диаграмм
-                        await CreateDiagram(document,secondSection.Range.End,minVerticalZ,bioHorizontal);
-                        await CreateDiagram(document,secondSection.Range.End,maxHorizontalZ,bioVertical);
+                        CreateDiagram(document,secondSection.Range.End,minVerticalZ,bioHorizontal);
+                        CreateDiagram(document,secondSection.Range.End,maxHorizontalZ,bioVertical);
                         //Создание новой страницы с ключом
                         var thirdSection = document.InsertSection(secondSection.Range.End);
                         document.InsertText(thirdSection.Range.End,"[Table]");
@@ -503,8 +462,8 @@ public class FileService : IFileService
                                                                        " секторной антенны в вертикальной и горизонтальной плоскостях для определения" +
                                                                        $" максимального радиус биологически-опасной зоны от секторной антенны: \nRб =√{formula}");
                         //Вызов методов формирование диаграмм
-                        await CreateDiagramSummary(document,secondSectionMax.Range.End,minVerticalSummaryZ,horizontalSummary);
-                        await CreateDiagramSummary(document,secondSectionMax.Range.End,maxHorizontalSummaryZ,verticalSummary);
+                        CreateDiagramSummary(document,secondSectionMax.Range.End,minVerticalSummaryZ,horizontalSummary);
+                        CreateDiagramSummary(document,secondSectionMax.Range.End,maxHorizontalSummaryZ,verticalSummary);
                         //Создание новой страницы с ключем
                         var thirdSectionMax = document.InsertSection(secondSectionMax.Range.End);
                         document.InsertText(thirdSectionMax.Range.End,"[Table]");
@@ -583,14 +542,9 @@ public class FileService : IFileService
                 document.InsertSingleLineText(tableFirst[11, 1].Range.Start, "Режим работы РТО на излучение (постоянный, повторно-кратковременный, импульсный)");
                 document.InsertSingleLineText(tableFirst[12, 1].Range.Start, "Место и тип размещения антенны " +
                                                                              "(например, \"на крыше АБК\", \"на кронштейне на стене технического этажа\")");
-                document.InsertSingleLineText(tableFirst[13, 1].Range.Start, "Высота подвеса антенны в метрах, м:" +
-                                                                             "                                                                                   " +
-                                                                             "                                                                                    " +
-                                                                             "                                                           " +
-                                                                             "-от уровня земли (указывается высота размещения фазового центра каждой антенны);" +
-                                                                             "                                                                                   " +
-                                                                             "                                                       " +
-                                                                             "-от уровня крыши (указывается от крыши, где установлена антенна," +
+                document.InsertSingleLineText(tableFirst[13, 1].Range.Start, "Высота подвеса антенны в метрах, м: " +
+                                                                             " \n-от уровня земли (указывается высота размещения фазового центра каждой антенны);" +
+                                                                             " \n-от уровня крыши (указывается от крыши, где установлена антенна," +
                                                                              " или от уровня крыши ближайшего наиболее высокого здания");
                 var x = 2;
                 for (int i = 0; i <= 14; i++)
@@ -738,11 +692,16 @@ public class FileService : IFileService
                 tableFlow.BeginUpdate();
                 await _totalFluxDensityService.CreateAsync(allEnergyResults, project.Id.ToString(), project.CreatedBy);
                 var totalFluxDensities = _totalFluxDensityService.GetAllByOid(project.Id.ToString());
+                var maxTotalFluxDensities = totalFluxDensities.Result.Max(total => Math.Abs(total.Value));
+                document.ReplaceAll("[Total]", $"Санитарно-защитная зона на высоте 2 м от уровня земли не устанавливается," +
+                                               $" т.к. суммарный уровень плотности потока энергии от антенн в точке максимального" +
+                                               $" значения на высоте 2 м от уровня земли составляет {maxTotalFluxDensities.ToString("F8")} мкВт/см²" +
+                                               $" и не превышает значения Ппду 10 мкВт/см².", SearchOptions.WholeWord);
                 CreateTableTotalFlux(document,tableFlow,totalFluxDensities.Result,positionTableTranslator+1);
                 document.Unit = DevExpress.Office.DocumentUnit.Inch;
                 var images = _repositoryWrapper.ProjectImageRepository
                     .GetAllByCondition(x => x.ProjectId == project.Id).ToList();
-                var folderPath = ("TemporaryFiles");
+                string folderPath = Path.Combine(mainDir,"TemporaryFiles");
                 if (!Directory.Exists(folderPath))
                     Directory.CreateDirectory(folderPath);
                 if (images.Count != 0)
@@ -757,9 +716,10 @@ public class FileService : IFileService
                             position = sect.Range.Start;
                         }
                         byte[] imageBytes = image.Image;
-                        string filePath = $"TemporaryFiles/{project.Id}{image.Id}.jpg";
-                        File.WriteAllBytes(filePath, imageBytes);
-                        Shape picture = document.Shapes.InsertPicture(position, DocumentImageSource.FromFile(filePath));
+                        
+                        string filePathImage = Path.Combine(mainDir,"TemporaryFiles",$"{project.Id}{image.Id}.jpg");
+                        File.WriteAllBytes(filePathImage, imageBytes);
+                        Shape picture = document.Shapes.InsertPicture(position, DocumentImageSource.FromFile(filePathImage));
                         picture.Size = new SizeF(9f, 8f);
                         picture.HorizontalAlignment = ShapeHorizontalAlignment.Center;
                         picture.VerticalAlignment = ShapeVerticalAlignment.Center;
@@ -768,9 +728,8 @@ public class FileService : IFileService
                 }
                 var keywordsLast = document.FindAll("[Table]",SearchOptions.WholeWord);
                 document.Delete(keywordsLast[0]);
-                wordProcessor.SaveDocument($"TemporaryFiles/Project{project.Id}.docx", DocumentFormat.OpenXml);
+                wordProcessor.SaveDocument(filePathExport, DocumentFormat.OpenXml);
             }
-            string filePathExport = @$"TemporaryFiles\Project{project.Id}.docx";
             if (!File.Exists(filePathExport))
                 return new BaseResponse<byte[]>(
                     Result: null,
@@ -819,7 +778,7 @@ public class FileService : IFileService
     }
 
 
-    private async Task<BaseResponse<bool>> CreateDiagram(Document document,DocumentPosition position,decimal max,List<BiohazardRadius> biohazardRadii)
+    private void CreateDiagram(Document document,DocumentPosition position,decimal max,List<BiohazardRadius> biohazardRadii)
     {
         document.Unit = DevExpress.Office.DocumentUnit.Inch;
         var chartShape = document.Shapes.InsertChart(position,ChartType.ScatterSmooth);
@@ -832,7 +791,7 @@ public class FileService : IFileService
         Worksheet worksheet = (Worksheet)chartShape.ChartFormat.Worksheet;
         var maxRadius = biohazardRadii.Max(radiation => Math.Abs(radiation.BiohazardRadiusZ));
         max = (maxRadius > max) ? maxRadius : max;
-        await SpecifyChartData(worksheet,biohazardRadii);
+        SpecifyChartData(worksheet,biohazardRadii);
         chart.SelectData(worksheet.Range.FromLTRB(0, 0, 1, 360));
         chart.Legend.Visible = false;
         chart.Title.Visible = true;
@@ -848,14 +807,9 @@ public class FileService : IFileService
         valueAxisX.Scaling.Min = ((int)max + 5) * -1;
         chart.Series[0].Outline.SetSolidFill(Color.FromArgb(0x00, 0x00, 0x00));
         chart.Series[0].Outline.Width = 1.2;
-        
-        return new BaseResponse<bool>(
-            Result: true,
-            Messages: new List<string> { "Файл успешно создан" },
-            Success: true);
     }
     
-    private async Task<BaseResponse<bool>> CreateDiagramSummary(Document document,DocumentPosition position,decimal max,List<SummaryBiohazardRadius> summaryBiohazardRadii)
+    private void CreateDiagramSummary(Document document,DocumentPosition position,decimal max,List<SummaryBiohazardRadius> summaryBiohazardRadii)
     {
         document.Unit = DevExpress.Office.DocumentUnit.Inch;
         var chartShape = document.Shapes.InsertChart(position,ChartType.ScatterSmooth);
@@ -867,8 +821,8 @@ public class FileService : IFileService
         ChartObject chart = (ChartObject)chartShape.ChartFormat.Chart;
         Worksheet worksheet = (Worksheet)chartShape.ChartFormat.Worksheet;
         var maxRadius = summaryBiohazardRadii.Max(radiation => Math.Abs(radiation.BiohazardRadiusZ));
-        max = (maxRadius > max) ? maxRadius : max;
-        await SpecifyChartDataSummary(worksheet,summaryBiohazardRadii);
+        max = (maxRadius > max) ? maxRadius : max; 
+        SpecifyChartDataSummary(worksheet,summaryBiohazardRadii);
         chart.SelectData(worksheet.Range.FromLTRB(0, 0, 1, 360));
         chart.Legend.Visible = false;
         chart.Title.Visible = true;
@@ -884,32 +838,24 @@ public class FileService : IFileService
         valueAxisX.Scaling.Min = ((int)max + 5) * -1;
         chart.Series[0].Outline.SetSolidFill(Color.FromArgb(0x00, 0x00, 0x00));
         chart.Series[0].Outline.Width = 1.2;
-        
-        return new BaseResponse<bool>(
-            Result: true,
-            Messages: new List<string> { "Файл успешно создан" },
-            Success: true);
     }
     
-    private async Task<bool> SpecifyChartData(Worksheet sheet,List<BiohazardRadius> biohazard)
+    private void SpecifyChartData(Worksheet sheet,List<BiohazardRadius> biohazard)
     {
         for (int i = 0; i < biohazard.Count; i++)
         {
             sheet[i, 0].Value = biohazard[i].BiohazardRadiusX;
             sheet[i, 1].Value = biohazard[i].BiohazardRadiusZ;
         }
-
-        return true;
     }
     
-    private async Task<bool> SpecifyChartDataSummary(Worksheet sheet,List<SummaryBiohazardRadius> summaryBiohazardRadii)
+    private void SpecifyChartDataSummary(Worksheet sheet,List<SummaryBiohazardRadius> summaryBiohazardRadii)
     {
         for (int i = 0; i < summaryBiohazardRadii.Count; i++)
         {
             sheet[i, 0].Value = summaryBiohazardRadii[i].BiohazardRadiusX;
             sheet[i, 1].Value = summaryBiohazardRadii[i].BiohazardRadiusZ;
         }
-        return true;
     }
     
     private void CreateTableEnergyResult(Document document,Table table,List<EnergyResult> energyResults,int position)

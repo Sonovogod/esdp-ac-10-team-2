@@ -1,6 +1,5 @@
 using Application.Interfaces;
 using Application.Models.AntennaTranslator;
-using AutoMapper;
 using DevExtreme.AspNet.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,12 +12,10 @@ namespace WebApi.Controllers;
 public class TranslatorTypesController : Controller
 {
     private readonly IServiceWrapper _service;
-    private readonly IMapper _mapper;
 
-    public TranslatorTypesController(IServiceWrapper service, IMapper mapper)
+    public TranslatorTypesController(IServiceWrapper service)
     {
         _service = service;
-        _mapper = mapper;
     }
     
     [HttpGet]
