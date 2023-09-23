@@ -14,6 +14,7 @@ public interface IServiceWrapper
     ITranslatorSpecsService TranslatorSpecsService { get; }
     IProjectAntennaService ProjectAntennaService { get; }
     IEnergyFlowService EnergyFlowService { get; }
+    ITotalFluxDensityService TotalFluxDensityService { get; }
     IRoleService RoleService { get; }
     IRadiationZoneService RadiationZoneService { get; }
     IRadiationZoneExelFileService RadiationZoneExelFileService{ get; }

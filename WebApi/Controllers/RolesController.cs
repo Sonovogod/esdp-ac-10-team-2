@@ -9,6 +9,7 @@ namespace WebApi.Controllers;
 
 [ApiController]
 [Route("api/roles")]
+[Authorize]
 public class RolesController : Controller
 {
     private readonly IServiceWrapper _service;
@@ -39,7 +40,6 @@ public class RolesController : Controller
     }
 
     [HttpPost]
-    [Authorize]
     public async Task<IActionResult> Post(CreateRoleDto model)
     {
         RoleDto roleDto = _mapper.Map<RoleDto>(model);

@@ -9,6 +9,7 @@ namespace WebApi.Controllers;
 
 [ApiController]
 [Route("api/antennae")]
+[Authorize]
 public class AntennasController : Controller
 {
     private readonly IServiceWrapper _service;
@@ -68,7 +69,6 @@ public class AntennasController : Controller
         return NotFound(baseResponse);
     }
     
-    // [HttpGet("index"), Authorize(Roles = "Admin")]
     [HttpGet("index")]
     public async Task<IActionResult> Get([FromQuery]DataSourceLoadOptionsBase loadOptions)
     {

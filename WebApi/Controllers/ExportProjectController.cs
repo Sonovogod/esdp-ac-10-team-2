@@ -19,7 +19,7 @@ public class ExportProjectController : Controller
     [HttpGet("{id}")]
     public async Task<FileResult> Index(string id)
     {
-        var file = await _service.ExportProjectService.GetProjectFile(id);
+        var file = await _service.FileService.ProjectWord(id);
         return File(file.Result, "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
     }
 }

@@ -9,7 +9,7 @@ namespace WebApi.Controllers;
 
 [ApiController]
 [Route("api/projects")]
-// [Authorize]
+[Authorize]
 public class ProjectsController : Controller
 {
     private readonly IServiceWrapper _service;
@@ -70,15 +70,6 @@ public class ProjectsController : Controller
     public async Task<IActionResult> Delete(string oid)
     {
         var baseResponse = await _service.ProjectService.Delete(oid);
-        if (baseResponse.Success)
-            return Ok(baseResponse);
-        return NotFound(baseResponse);
-    }
-
-    [HttpGet("word")]
-    public async Task<IActionResult> CreateWord(string oid)
-    {
-        var baseResponse = await _service.FileService.ProjectWord(oid);
         if (baseResponse.Success)
             return Ok(baseResponse);
         return NotFound(baseResponse);

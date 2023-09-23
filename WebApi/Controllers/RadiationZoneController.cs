@@ -1,11 +1,13 @@
 using Application.Interfaces;
 using DevExtreme.AspNet.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
 
 [ApiController]
 [Route("api/radiationZones")]
+[Authorize]
 public class RadiationZoneController : Controller
 {
     private readonly IServiceWrapper _service;

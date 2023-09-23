@@ -83,26 +83,6 @@ public class EnergyFlowService : IEnergyFlowService
         var result = (decimal)Math.Sqrt(Math.Pow((double)(heightInstall - HumanHeight), 2) + Math.Pow(distance, 2));
         return result;
     }
-    public decimal GetRB(decimal power,decimal height,decimal lost,decimal multiplier) //R,m
-    {
-        double rB = Math.Sqrt(8 * (double)power * (double)Multiplier(height) * (double)Multiplier(-lost) / 10) * 1 * (double)Multiplier(multiplier);
-        double result = Math.Round(rB, 3);
-        return (decimal)result;
-    }
-    
-    public decimal GetRZ(decimal degree,decimal rB) //Rz,m
-    {
-        double rZ = (double)rB * Math.Sin((double)-degree * Math.PI / 180);
-        double result = Math.Round(rZ, 3);
-        return (decimal)result;
-    }
-    
-    public decimal GetRX(decimal degree,decimal rB) //Rx,m
-    {
-        double rZ = (double)rB * Math.Cos((double)-degree * Math.PI / 180);
-        double result = Math.Round(rZ, 3);
-        return (decimal)result;
-    }
 
     private decimal NormalizedVerticalPower(decimal distance, decimal heightInstall, Guid translatorId) //F(θ)
     {
@@ -186,7 +166,8 @@ public class EnergyFlowService : IEnergyFlowService
 
     public BaseResponse<List<EnergyResultDto>> GetAllByOid(string oid)
     {
-        var energyResults =  _repositoryWrapper.EnergyFlowRepository.GetAllByCondition(x => x.AntennaTranslatorId.ToString() == oid);
+        var energyResults =  _repositoryWrapper.EnergyFlowRepository.GetAllByCondition
+            (x => x.AntennaTranslatorId.ToString() == oid);
         List<EnergyResultDto> model = _mapper.Map<List<EnergyResultDto>>(energyResults);
         if (energyResults is null)
             return new BaseResponse<List<EnergyResultDto>>(

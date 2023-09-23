@@ -1,6 +1,5 @@
 using Application.Interfaces;
 using Application.Models.Projects.ProjectImages;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,12 +11,10 @@ namespace WebApi.Controllers;
 public class ProjectImagesControllers : Controller
 {
     private readonly IServiceWrapper _service;
-    private readonly IMapper _mapper;
 
-    public ProjectImagesControllers(IServiceWrapper service, IMapper mapper)
+    public ProjectImagesControllers(IServiceWrapper service)
     {
         _service = service;
-        _mapper = mapper;
     }
 
     [HttpGet("{id}")]

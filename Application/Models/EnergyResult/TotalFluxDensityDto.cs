@@ -1,8 +1,9 @@
+using Domain.Common;
 using Domain.Entities;
 
 namespace Application.Models.EnergyResult;
 
-public class CreateTotalFluxDensityDto
+public class TotalFluxDensityDto : BaseEntity
 {
     public int Distance { get; set; }
     public decimal Value { get; set; }

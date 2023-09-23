@@ -39,6 +39,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <None Update="Template\ProjectTemp.docx">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
       <None Update="Template\template.xlsx">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>

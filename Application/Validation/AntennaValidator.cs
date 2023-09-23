@@ -1,6 +1,5 @@
 
 using Application.Models.Antennae;
-using Domain.Entities;
 using FluentValidation;
 
 namespace Application.Validation;

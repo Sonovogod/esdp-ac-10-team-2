@@ -10,4 +10,9 @@ public class BiohazardRadiusRepository : BaseRepository<BiohazardRadius>,IBiohaz
     public BiohazardRadiusRepository(Project5GDbContext dbContext) : base(dbContext)
     {
     }
+
+    public void Delete(List<BiohazardRadius> biohazardRadii)
+    {
+        DbContext.BiohazardRadii.RemoveRange(biohazardRadii);
+    }
 }

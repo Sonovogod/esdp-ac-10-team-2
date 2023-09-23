@@ -11,9 +11,9 @@ public class EnergyResultValidator : AbstractValidator<CreateEnergyResultDto>
             .NotEqual(0).WithMessage("Значение коэфициента усиления не может быть 0");
         RuleFor(energyResult => energyResult.PowerSignal)
             .NotEqual(0).WithMessage("Значение мощности сигнала не может быть 0");
-        RuleFor(energyResult => energyResult.PowerSignal)
+        RuleFor(energyResult => energyResult.TransmitLossFactor)
             .NotEqual(0).WithMessage("Значение ослабление сигнала передатчика не может быть 0");
-        RuleFor(energyResult => energyResult.PowerSignal)
+        RuleFor(energyResult => energyResult.HeightInstall)
             .NotEqual(0).WithMessage("Значение высоты установки не может быть 0");
     }
 }

@@ -6,4 +6,5 @@ namespace Application.Interfaces;
 public interface IBiohazardRadiusService
 {
     public Task<BaseResponse<bool>> Create(string id);
+    public decimal Multiplier(decimal value);
 }

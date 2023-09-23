@@ -27,6 +27,7 @@ public class ServiceWrapper : IServiceWrapper
     private readonly Lazy<IAntennaTranslatorService> _antennaTranslatorService;
     private readonly Lazy<IBiohazardRadiusService> _biohazardRadiusService;
     private readonly Lazy<IProjectImageService> _projectImageService;
+    private readonly Lazy<ITotalFluxDensityService> _totalFluxDensityService;
     private readonly Lazy<IExportProjectService> _exportProjectService;
 
     public ServiceWrapper(
@@ -43,16 +44,18 @@ public class ServiceWrapper : IServiceWrapper
         AntennaValidator antennaValidator,
         AntennaTranslatorValidator antennaTranslatorValidator,
         EnergyResultValidator energyResultValidator,
+        TotalFluxDensityResultValidator totalFluxDensityResultValidator,
         UpdateUserValidator updateUserValidator,
         RoleValidator roleValidator,
         RadiationZoneValidator radiationZoneValidator,
         TranslatorTypeValidator translatorTypeValidator,
         ExecutiveCompanyValidator executiveCompanyValidator,
         IEnergyFlowService energyFlowService,
+        ITotalFluxDensityService totalFluxDensityService,
         IBiohazardRadiusService biohazardRadiusService,
         ProjectAntennaValidator projectAntennaValidator)
     {
-        _fileService = new Lazy<IFileService>(() => new FileService(repository, energyFlowService,biohazardRadiusService));
+        _fileService = new Lazy<IFileService>(() => new FileService(repository, energyFlowService,biohazardRadiusService,totalFluxDensityService));
         _projectAntennaService = new Lazy<IProjectAntennaService>(() => new ProjectAntennaService(repository, mapper, projectAntennaValidator));
         _roleService = new Lazy<IRoleService>(() => new RoleService(repository, mapper, roleValidator));
         _executiveCompanyService = new Lazy<IExecutiveCompanyService>(() =>
@@ -72,6 +75,8 @@ public class ServiceWrapper : IServiceWrapper
         _biohazardRadiusService = new Lazy<IBiohazardRadiusService>(() => new BiohazardRadiusService(repository));
         _energyFlowService =
             new Lazy<IEnergyFlowService>(() => new EnergyFlowService(energyResultValidator, mapper, repository));
+        _totalFluxDensityService =
+            new Lazy<ITotalFluxDensityService>(() => new TotalFluxDensityService(totalFluxDensityResultValidator, mapper, repository));
         _radiationZoneService =
             new Lazy<IRadiationZoneService>(() => new RadiationZoneService(repository, mapper, radiationZoneValidator));
         _projectImageService = new Lazy<IProjectImageService>(() => new ProjectImageService(repository, mapper));
@@ -92,6 +97,7 @@ public class ServiceWrapper : IServiceWrapper
     public IAntennaService AntennaService => _antennaService.Value;
     public ITranslatorSpecsService TranslatorSpecsService => _translatorSpecsService.Value;
     public IEnergyFlowService EnergyFlowService => _energyFlowService.Value;
+    public ITotalFluxDensityService TotalFluxDensityService => _totalFluxDensityService.Value;
     public IRoleService RoleService => _roleService.Value;
     public IRadiationZoneService RadiationZoneService => _radiationZoneService.Value;
     public IExecutiveCompanyService ExecutiveCompanyService => _executiveCompanyService.Value;

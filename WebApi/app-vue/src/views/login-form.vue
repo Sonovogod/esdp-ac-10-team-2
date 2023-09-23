@@ -27,13 +27,6 @@
         >
         </dx-button-options>
       </dx-button-item>
-      <dx-item>
-        <template #default>
-          <div class="link">
-            <router-link to="/reset-password">Забыли пароль?</router-link>
-          </div>
-        </template>
-      </dx-item>
       <template #signInTemplate>
         <div>
           <span class="dx-button-text">
@@ -73,9 +66,6 @@ export default {
     });
     const loading = ref(false);
 
-    function onCreateAccountClick() {
-      router.push("/create-account");
-    }
 
     async function onSubmit() {
       loading.value = true;
@@ -85,14 +75,13 @@ export default {
         await router.push(route.query.redirect || '/home');
       } catch (error){
         loading.value = false;
-        notify(error.message, 'error', 2000);
+        notify("Неправильный логин или пароль", 'error', 2000);
       }
     }
 
     return {
       formData,
       loading,
-      onCreateAccountClick,
       onSubmit
     };
   },

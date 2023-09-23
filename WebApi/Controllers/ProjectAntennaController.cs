@@ -1,5 +1,4 @@
 using Application.Interfaces;
-using Application.Models.Antennae;
 using Application.Models.Projects.ProjectAntennas;
 using AutoMapper;
 using DevExtreme.AspNet.Data;
