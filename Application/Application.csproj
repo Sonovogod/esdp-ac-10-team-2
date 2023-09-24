@@ -12,20 +12,22 @@
 
     <ItemGroup>
       <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+      <PackageReference Include="DevExpress.Charts" Version="23.1.5" />
+      <PackageReference Include="DevExpress.Charts.Core" Version="23.1.5" />
       <PackageReference Include="DevExpress.Data" Version="23.1.5" />
-      <PackageReference Include="DevExtreme.AspNet.Data" Version="2.9.3" />
+      <PackageReference Include="DevExpress.TreeMap" Version="23.1.5" />
+      <PackageReference Include="DevExpress.TreeMap.Core" Version="23.1.5" />
+      <PackageReference Include="DevExtreme.AspNet.Data" Version="3.0.0" />
       <PackageReference Include="EPPlus" Version="6.2.8" />
       <PackageReference Include="FluentValidation" Version="11.6.0" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.9" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="DevExpress.Charts" Version="23.1.4" />
-        <PackageReference Include="DevExpress.DataVisualization.Core" Version="23.1.4" />
-        <PackageReference Include="DevExpress.Document.Processor" Version="23.1.4" />
-        <PackageReference Include="DevExpress.RichEdit.Core" Version="23.1.4" />
-        <PackageReference Include="DevExpress.Spreadsheet.Core" Version="23.1.4" />
-        <PackageReference Include="DevExpress.TreeMap" Version="23.1.4" />
+        <PackageReference Include="DevExpress.DataVisualization.Core" Version="23.1.5" />
+        <PackageReference Include="DevExpress.Document.Processor" Version="23.1.5" />
+        <PackageReference Include="DevExpress.RichEdit.Core" Version="23.1.5" />
+        <PackageReference Include="DevExpress.Spreadsheet.Core" Version="23.1.5" />
     </ItemGroup>
 
 </Project>

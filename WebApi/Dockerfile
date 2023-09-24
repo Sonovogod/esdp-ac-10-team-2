@@ -12,7 +12,7 @@ COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
 COPY ./NuGet.Config ./
 RUN dotnet restore "WebApi/WebApi.csproj" --configfile ./NuGet.Config
 
-RUN dotnet restore "WebApi/WebApi.csproj"
+#RUN dotnet restore "WebApi/WebApi.csproj"
 COPY . .
 WORKDIR "/src/WebApi"
 RUN dotnet build "WebApi.csproj" -c Release -o /app/build

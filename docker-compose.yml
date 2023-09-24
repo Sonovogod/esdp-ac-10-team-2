@@ -37,5 +37,15 @@ services:
       - "5001:8080"
     networks:
       - deploy-guide-dev
+  proxy:
+    container_name: nginx
+    image: nginx:mainline
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "81:81"
+    networks:
+      - deploy-guide-dev
 volumes:
   postgres-data:
+  
