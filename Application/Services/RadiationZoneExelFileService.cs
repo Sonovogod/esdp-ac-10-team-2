@@ -147,7 +147,7 @@ public class RadiationZoneExelFileService : IRadiationZoneExelFileService
         {
             string mainDir = Environment.CurrentDirectory;
             var fileExtension = Path.GetExtension(uploadedFile.FileName).ToLower();
-            var folderPath = (mainDir + @"\TemporaryFiles");
+            var folderPath = Path.Combine(mainDir, "TemporaryFiles");
 
             if (!Directory.Exists(folderPath))
                 Directory.CreateDirectory(folderPath);

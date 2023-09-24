@@ -24,7 +24,7 @@ try
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
-    //string connection = "Server=postgres_db;port=5432;database=Project5G;username=postgres;password=123;";
+    //string connection = "Server=localhost;port=5432;database=Project5G;username=postgres;password=123;";
     string connection = "host=host.docker.internal;port=5432;database=Test5GProject;username=postgres;password=123;";
 
     builder.Services.AddDbConfigure(connection!);

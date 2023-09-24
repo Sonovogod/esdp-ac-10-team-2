@@ -4,6 +4,7 @@ import authorizationService from "@/api/AuthorizationService";
 
 const instance = axios.create({
     baseURL: 'http://localhost:80/',
+    //baseURL: 'https://localhost:7015/',
 });
 
 instance.interceptors.response.use(
